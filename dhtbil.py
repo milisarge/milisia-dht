@@ -168,7 +168,8 @@ PORT = 9009
 MESAJ_DIZINI="./mesajlar/"
 SMESAJ_DIZINI="./smesajlar/"
 BILDIRIM_SURE=10000
-
+os.makedirs(MESAJ_DIZINI, exist_ok=True)
+os.makedirs(SMESAJ_DIZINI, exist_ok=True)
 
 #none olursa öntanımlı bootstrap.ring.cx i kullanır
 dhtsunucu=None #"192.168.43.207:4222"
