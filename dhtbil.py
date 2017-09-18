@@ -199,12 +199,15 @@ def smesajlar_besleme():
   while 1:
      anahtar="milbis-bildirim"
      dhtbes=Dht()
-     for mesajd in os.listdir(SMESAJ_DIZINI):
+     mesajlar=os.listdir(SMESAJ_DIZINI)
+     print ("beslenecekler",mesajlar)
+     for mesajd in mesajlar:
          dosya=os.path.basename(mesajd)
          if dhtbes.sunucuya_kayit(dosya,anahtar,"devam"):
              icerik=open(SMESAJ_DIZINI+dosya).read()
              if dhtbes.sunucuya_kayit(icerik,dosya,"devam"):
                  print(dosya,"besleme yapıldı.")
+     print ("besleme 20sn uyumada")
      time.sleep(20)
               
 #periyodik dht sunucu kaydı için thread tanımlama
@@ -230,7 +233,6 @@ while True:
    bildirimler=set(bildirimler)
    if len(bildirimler) > 0:
       for bildirim in bildirimler:
-         print ("-------->",bildirimler)
          print (bildirim,"icerik aranıyor")
          bildirim_icerik=dht3.icerik_ara(bildirim,arasn=3)
          if bildirim_icerik :
