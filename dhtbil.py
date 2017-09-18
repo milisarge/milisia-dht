@@ -227,8 +227,10 @@ while True:
    dht3=Dht(bs=dhtsunucu)
    # 8c798d6f0867e8cbdb7f565e9e95388796ef1542 milbis-bildirim
    bildirimler=dht2.bildirim_ara("milbis-bildirim",arasn=3)
+   bildirimler=set(bildirimler)
    if len(bildirimler) > 0:
       for bildirim in bildirimler:
+         print ("-------->",bildirimler)
          print (bildirim,"icerik aranıyor")
          bildirim_icerik=dht3.icerik_ara(bildirim,arasn=3)
          if bildirim_icerik :
