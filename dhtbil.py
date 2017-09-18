@@ -31,6 +31,7 @@ import opendht as dht
 import threading, time
 from random import randint
 
+
 class Dht():
    
    def __init__(self,port=None,bs=None):
@@ -51,22 +52,18 @@ class Dht():
       self.node.bootstrap(bss,bsp)
 
    def hash_al(self,anahtar):
+      """Verilen anahtarın hash değerini almak için kulanılır."""
       sha1 = hashlib.sha1()
       sha1.update(anahtar.encode())
       anahtar_hash=sha1.hexdigest()
       return anahtar_hash
 		
-   def kayit_edildi(self):
-      time.sleep(10)
-      print ("--------")
-		
    def sunucuya_kayit(self,deger,anahtar=None,gorev_bitince="sonlan"):
-      #ahash=self.hash_al(anahtar)
+      """Verilen anahtar değeri ve değeri dht e kayıt eder."""
       if anahtar is None:
          anahtar=self.sunucu_isim
-      time.sleep(1)
       sonuc=self.node.put(dht.InfoHash.get(anahtar),dht.Value(deger.encode()))
-      #dht dugumunu durdurmak için
+      '''dht dugumunu durdurmak için gorev_bitince="sonlan" atanır.'''
       if gorev_bitince == "sonlan":
           self.node=None
       return sonuc
@@ -87,27 +84,6 @@ class Dht():
             if sunbilgi not in liste:
                liste.append(sunbilgi)
                print (len(liste)," adet kayıt bulundu.",sunbilgi)
-         time.sleep(1)
-         if bitis == arasn:
-            print ("dht sunucu tarama sonlandırıldı.")
-            break
-      return liste
-		
-   def ara(self,anahtar=None,arasn=1):
-      liste=[]
-      #arama saniyesi
-      print ("(%s) altında %s saniye arama yapılacak!" % (self.sunucu,arasn))
-      if anahtar is None:
-         anahtar="arama"
-      bitis = 1
-      while bitis > 0:
-         bitis += 1
-         veriler=(self.node.get(InfoHash.get(anahtar)))
-         for veri in veriler:
-            bilgi=(veri.data).decode('utf-8')
-            if bilgi not in liste:
-               liste.append(bilgi)
-               print (len(liste)," adet kayıt bulundu.",bilgi)
          time.sleep(1)
          if bitis == arasn:
             print ("dht sunucu tarama sonlandırıldı.")
@@ -141,19 +117,19 @@ class Dht():
          liste.append(dosya)
       return liste
       
-   def bildirim_ara(self,anahtar=None,arasn=1):
+   def ara(self,anahtar=None,arasn=1,arama_baslik="genel arama"):
       mliste=self.mliste_al()
       liste=[]
       #arama saniyesi
-      print ("(%s) altında %s saniye %s araması yapılacak!" % (self.sunucu,arasn,"yeni bildirim"))
+      print ("(%s) altında %s saniye %s araması yapılacak!" % (self.sunucu,arasn,arama_baslik))
       if anahtar is None:
          anahtar="arama"
       bitis = 1
       while bitis > 0:
          bitis += 1
-         bildirimler=(self.node.get(InfoHash.get(anahtar)))
-         for bildirim in bildirimler:
-            b_isim=(bildirim.data).decode('ascii')
+         sonuclar=(self.node.get(InfoHash.get(anahtar)))
+         for sonuc in sonuclar:
+            b_isim=(sonuc.data).decode('ascii')
             if b_isim not in mliste:
                liste.append(b_isim)  
          time.sleep(1)
@@ -191,16 +167,26 @@ def dht_kayit_islemi():
       dhtkyt=Dht()
       # 5e0f45714af94cf735f51ffba0648a0e77ff4297 milbis-kayit
       # bildirim istemcisini milbis-kayit anahtarıyla dht kaydını yapıyoruz.
-      if dhtkyt.sunucuya_kayit(bilgi,anahtar):
+      if dhtkyt.sunucuya_kayit(bilgi,anahtar,"devam"):
           print("Sunucu milbis-dht",anahtar,":",kimlik,dhtkyt.sunucu,"'a kaydı yapıldı.")
-      time.sleep(20)
+      # aktiv milbis istemciler
+      aktivler=dhtkyt.ara("milbis-kayit",3,"aktiv istemciler")
+      print ("aktiv liste:",set(aktivler))
+      dhtkyt.node=None
+      time.sleep(60)
+      
+def zaman_sirali(yol):
+    mtime = lambda f: os.stat(os.path.join(yol, f)).st_mtime
+    return list(sorted(os.listdir(yol), key=mtime, reverse=True))
+
    
 def smesajlar_besleme():
+
   while 1:
      anahtar="milbis-bildirim"
      dhtbes=Dht()
-     mesajlar=os.listdir(SMESAJ_DIZINI)
-     print ("beslenecekler",mesajlar)
+     mesajlar=zaman_sirali(SMESAJ_DIZINI)
+     #print ("beslenecekler",mesajlar)
      for mesajd in mesajlar:
          dosya=os.path.basename(mesajd)
          if dhtbes.sunucuya_kayit(dosya,anahtar,"devam"):
@@ -208,7 +194,7 @@ def smesajlar_besleme():
              if dhtbes.sunucuya_kayit(icerik,dosya,"devam"):
                  print(dosya,"besleme yapıldı.")
      print ("besleme 20sn uyumada")
-     time.sleep(20)
+     time.sleep(60)
               
 #periyodik dht sunucu kaydı için thread tanımlama
 dhtkayit = threading.Thread(name='dht_kayit_islemi', target=dht_kayit_islemi)
@@ -224,12 +210,22 @@ dhtkayit2.start()
 #dht2=Dht(bs=dhtsunucu)
 #sunucular=dht2.sunucular()
 
+def dokumanla():
+    out = sys.stdout
+    sys.stdout = open("dokuman", "w")
+    help(Dht)
+    sys.stdout.close()
+    sys.stdout = out
+
+#dokumanla()
+
 while True: 
    #bildirim kontrolu yapılacak.
    dht2=Dht(bs=dhtsunucu)
    dht3=Dht(bs=dhtsunucu)
    # 8c798d6f0867e8cbdb7f565e9e95388796ef1542 milbis-bildirim
-   bildirimler=dht2.bildirim_ara("milbis-bildirim",arasn=3)
+   #bildirimler aranacak.
+   bildirimler=dht2.ara("milbis-bildirim",3,"yeni bildirim")
    bildirimler=set(bildirimler)
    if len(bildirimler) > 0:
       for bildirim in bildirimler:
@@ -240,7 +236,6 @@ while True:
              ilet("ileti",bildirim_icerik,BILDIRIM_SURE)
              print (bildirim,"icerik bulundu--->",bildirim_icerik)
          else:	
-             print (bildirim,"icerik bulunamadı!")
-   time.sleep(1) 	
+             print (bildirim,"icerik bulunamadı!") 	
    print(".")
 
