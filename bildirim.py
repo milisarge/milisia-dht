@@ -194,7 +194,7 @@ def smesajlar_besleme():
              if dhtbes.sunucuya_kayit(icerik,dosya,"devam"):
                  print(dosya,"besleme yapıldı.")
      print ("besleme 20sn uyumada")
-     time.sleep(60)
+     time.sleep(15)
               
 #periyodik dht sunucu kaydı için thread tanımlama
 dhtkayit = threading.Thread(name='dht_kayit_islemi', target=dht_kayit_islemi)
