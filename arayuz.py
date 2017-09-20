@@ -4,7 +4,7 @@ from PyQt5.QtWidgets import (QDialog, QVBoxLayout, QListWidget,QListWidgetItem, 
 from PyQt5.QtCore import Qt, QFileSystemWatcher, QSettings
 from PyQt5.QtGui import QIcon
 import os, yaml, sys
-from ui import listemadddesi, ayarlarui
+from ui import listemadddesi, ayarlarui, gonder
 
 
 class Okuyucu(QDialog):
@@ -21,9 +21,11 @@ class Okuyucu(QDialog):
 
         self.menu_cekmece = QMenu(self)
         self.mesaj_oku_aksiyon = QAction("Mesaj Oku",self,statusTip="MesajOku",triggered=self.mesaj_oku_fonk)
+        self.mesaj_gonder_aksiyon = QAction("Mesaj Gönder",self,statusTip="MesajGonder",triggered=self.mesaj_gonder_fonk)
         self.ayarlar_aksiyon = QAction("Ayarlar",self,statusTip="Ayarlar",triggered=self.ayarlar_fonk)
         self.kapat_aksiyon = QAction("Kapat",self,statusTip="Kapat",triggered=self.kapat_fonk)
         self.menu_cekmece.addAction(self.mesaj_oku_aksiyon)
+        self.menu_cekmece.addAction(self.mesaj_gonder_aksiyon)
         self.menu_cekmece.addAction(self.ayarlar_aksiyon)
         self.menu_cekmece.addAction(self.kapat_aksiyon)
         self.sistem_cekmecesi.setContextMenu(self.menu_cekmece)
@@ -49,6 +51,10 @@ class Okuyucu(QDialog):
         self.dosya_izleyici = QFileSystemWatcher()
         self.dosya_izleyici.addPath("./mesajlar")
         self.dosya_izleyici.directoryChanged.connect(self.tum_mesajlar_fonk)
+
+    def mesaj_gonder_fonk(self):
+    	pencere_gonder = gonder.Gonderici(self)
+    	pencere_gonder.show()
 
     def closeEvent(self, event):
         self.settings.setValue('liste', self.okunmus_mesajlar)
