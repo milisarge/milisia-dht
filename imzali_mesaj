@@ -1,0 +1,28 @@
+#! /bin/sh
+# asc dışarı dosya oluşturmak
+# gpg --armor --export mailin > mykey.asc
+# key id i servere yüklemek
+# gpg --keyserver pgp.mit.edu --send-key XXXXXXXX
+# keyleri görmek
+# gpg --list-keys
+mesaj_tip="$1"
+mesaj_icerik="$2"
+if [ "$1" = "-b" ];then
+	mesaj_tip="bilgi"
+elif [ "$1" = "-s" ];then
+	mesaj_tip="sistem"
+else
+	echo "mesaj tipi yanlış!";echo "mesaj_gonder.sh  -b|-s  mesaj_icerik";exit 0
+fi
+zaman=`date +%m-%d-%y.%H:%M:%S`
+mesaj="$1"
+gdosya1=$(mktemp)
+gdosya=$(mktemp)
+echo "mesaj_tipi : ${mesaj_tip}" > $gdosya1
+echo "mesaj_icerik : ${mesaj_icerik}" >> $gdosya1
+echo "tarih : $zaman" >> $gdosya1
+cat $gdosya1 | iconv -f ascii -t utf8 > $gdosya
+gpg --sign $gdosya
+ydosya=$(sha256sum $gdosya.gpg | cut -d' ' -f1)
+cp -rf $gdosya.gpg ./smesajlar/$ydosya
+rm $gdosya $gdosya1
