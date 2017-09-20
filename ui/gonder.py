@@ -58,6 +58,7 @@ class Gonderici(QDialog):
             shutil.move("./gecici", "./smesajlar/"+self.dosyaHashle("./gecici"))
             QMessageBox.information(self,"Gönderildi","Mesajınız başarıyla gönderidi.")
             self.gonderilen_text.clear()
+            self.tum_mesajlar_fonk()
 
     def ayarlar_fonk(self):
         ayarlar_pencere = ayarlarui.Ayarlar(self)
@@ -83,6 +84,7 @@ class Gonderici(QDialog):
         mesajlar = duzenli_mesajlar.keys()
         sirali_mesajlar = list(mesajlar)
         sirali_mesajlar.sort()
+        sirali_mesajlar = sirali_mesajlar[::-1]
         if len(sirali_mesajlar) != 0:
             for mesaj in sirali_mesajlar:
                 mesaj_ = duzenli_mesajlar[mesaj]
@@ -97,9 +99,9 @@ class Gonderici(QDialog):
 
     def mesajlar_oku_sirala(self):
         duzenli_mesajlar = {}
-        mesajlar = os.listdir("./mesajlar")
+        mesajlar = os.listdir("./smesajlar")
         for mesaj in mesajlar:
-            okunan = self.yaml_oku("./mesajlar/"+mesaj)
+            okunan = self.yaml_oku("./smesajlar/"+mesaj)
             if okunan == None:
                 pass
             try:
@@ -116,6 +118,7 @@ class Gonderici(QDialog):
                 mesaj_tarihi = ""
             duzenli_mesajlar[mesaj_tarihi]=[mesaj_tipi,mesaj_metni,mesaj]
         return duzenli_mesajlar
+
     def dosyaHashle(self,dosya):
         BUF_SIZE = 65536  # 64k lik parca-chunklar ile 
         sha1 = hashlib.sha1()

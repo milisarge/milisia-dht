@@ -88,6 +88,7 @@ class Okuyucu(QDialog):
         mesajlar = duzenli_mesajlar.keys()
         sirali_mesajlar = list(mesajlar)
         sirali_mesajlar.sort()
+        sirali_mesajlar = sirali_mesajlar[::-1]
         if len(sirali_mesajlar) != 0:
             for mesaj in sirali_mesajlar:
                 mesaj_ = duzenli_mesajlar[mesaj]
