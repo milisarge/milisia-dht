@@ -97,6 +97,7 @@ class Okuyucu(QDialog):
             except:
                 mesaj_tarihi = ""
             ozel_widget = listemadddesi.OzelListeMaddesi(self)
+            ozel_widget.okuyucu()
             ozel_widget.mesaj_id_ekle(mesaj)
             ozel_widget.mesaj_tipi_ekle(mesaj_tipi)
             ozel_widget.mesaj_ekle(mesaj_metni)
