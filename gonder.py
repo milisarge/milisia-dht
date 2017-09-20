@@ -1,6 +1,6 @@
 
 from PyQt5.QtWidgets import (QDialog, QVBoxLayout, QHBoxLayout, QListWidget,QListWidgetItem, QApplication, QListView, QMessageBox,
-                             QDesktopWidget, QSystemTrayIcon, QMenu, QAction,qApp, QTextEdit, QPushButton, QLineEdit, QLabel)
+                             QDesktopWidget, QSystemTrayIcon, QMenu, QAction,qApp, QTextEdit, QPushButton, QComboBox, QLabel)
 from PyQt5.QtCore import Qt, QFileSystemWatcher, QSettings, QDateTime
 from PyQt5.QtGui import QIcon
 import os, yaml, sys, hashlib, shutil
@@ -25,7 +25,8 @@ class Gonderici(QDialog):
 
         kutu_h = QHBoxLayout()
         kutu_h.addWidget(QLabel("<b>Mesaj Tipi :</b>"))
-        self.mesaj_tipi_text = QLineEdit()
+        self.mesaj_tipi_text = QComboBox()
+        self.mesaj_tipi_text.addItems(["------","bilgi","sistem","kritik",])
         kutu_h.addWidget(self.mesaj_tipi_text)
         kutu.addLayout(kutu_h)
 
@@ -43,21 +44,20 @@ class Gonderici(QDialog):
 
 
     def gonder_fonk(self):
-    	tip = self.mesaj_tipi_text.text()
-    	mesaj = self.gonderilen_text.toPlainText()
-    	if tip == "":
-    		QMessageBox.warning(self,"Uyarı","Lütfen bir mesaj tipi giriniz")
-    	elif mesaj == "":
-    		QMessageBox.warning(self,"Uyarı","Lütfen bir mesaj giriniz")
-    	else:
-    		gonderilecek = """mesaj_tipi : {}\nmesaj : {}\ntarih : {}""".format(tip,mesaj,QDateTime.currentDateTime().toString("yyyy-MM-dd_hh:mm")))
-    		f = open("./gecici","w")
-    		f.write(gonderilecek)
-    		f.close()
-    		shutil.move("./gecici", "./smesajlar/"+self.dosyaHashle("./gecici"))
-    		QMessageBox.information(self,"Gönderildi","Mesajınız başarıyla gönderidi.")
-    		self.mesaj_tipi_text.clear()
-    		self.gonderilen_text.clear()
+        tip = self.mesaj_tipi_text.currentText()
+        mesaj = self.gonderilen_text.toPlainText()
+        if tip == "------":
+            QMessageBox.warning(self,"Uyarı","Lütfen bir mesaj tipi giriniz")
+        elif mesaj == "":
+            QMessageBox.warning(self,"Uyarı","Lütfen bir mesaj giriniz")
+        else:
+            gonderilecek = """mesaj_tipi : {}\nmesaj : {}\ntarih : {}""".format(tip,mesaj,QDateTime.currentDateTime().toString("yyyy-MM-dd_hh:mm"))
+            f = open("./gecici","w")
+            f.write(gonderilecek)
+            f.close()
+            shutil.move("./gecici", "./smesajlar/"+self.dosyaHashle("./gecici"))
+            QMessageBox.information(self,"Gönderildi","Mesajınız başarıyla gönderidi.")
+            self.gonderilen_text.clear()
 
     def ayarlar_fonk(self):
         ayarlar_pencere = ayarlarui.Ayarlar(self)

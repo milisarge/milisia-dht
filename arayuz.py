@@ -111,8 +111,17 @@ class Okuyucu(QDialog):
             self.mesaj_liste.setItemWidget(ozel_widget_item,ozel_widget)
 
             if mesaj not in self.varolan_mesajlar:
+                print(mesaj_tipi)
+                if mesaj_tipi == "bilgi":
+                    icon = 1
+                elif mesaj_tipi == "sistem":
+                    icon = 2
+                elif mesaj_tipi == "kritik":
+                    icon = 3
+                else:
+                    icon = 0
                 self.sistem_cekmecesi.showMessage(mesaj_tipi, mesaj_metni,
-                                                  QSystemTrayIcon.MessageIcon(1), 5000)
+                                                  QSystemTrayIcon.MessageIcon(icon), 5000)
                 self.sistem_cekmecesi.setIcon(QIcon("./icons/milis-bildirim-m.png"))
 
 
