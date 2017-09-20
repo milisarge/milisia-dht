@@ -1,7 +1,7 @@
 
 from PyQt5.QtWidgets import (QDialog, QVBoxLayout, QHBoxLayout, QListWidget,QListWidgetItem, QApplication, QListView, QMessageBox,
                              QDesktopWidget, QSystemTrayIcon, QMenu, QAction,qApp, QTextEdit, QPushButton, QLineEdit, QLabel)
-from PyQt5.QtCore import Qt, QFileSystemWatcher, QSettings, QDate
+from PyQt5.QtCore import Qt, QFileSystemWatcher, QSettings, QDateTime
 from PyQt5.QtGui import QIcon
 import os, yaml, sys, hashlib, shutil
 from ui import listemadddesi, ayarlarui
@@ -50,7 +50,7 @@ class Gonderici(QDialog):
     	elif mesaj == "":
     		QMessageBox.warning(self,"Uyarı","Lütfen bir mesaj giriniz")
     	else:
-    		gonderilecek = """mesaj_tipi : {}\nmesaj : {}\ntarih : {}""".format(tip,mesaj,QDate.currentDate().toString("dd.MM.yyyy"))
+    		gonderilecek = """mesaj_tipi : {}\nmesaj : {}\ntarih : {}""".format(tip,mesaj,QDateTime.currentDateTime().toString("yyyy-MM-dd_hh:mm")))
     		f = open("./gecici","w")
     		f.write(gonderilecek)
     		f.close()
