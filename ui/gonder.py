@@ -51,7 +51,7 @@ class Gonderici(QDialog):
         elif mesaj == "":
             QMessageBox.warning(self,"Uyarı","Lütfen bir mesaj giriniz")
         else:
-            gonderilecek = """mesaj_tipi : {}\nmesaj : {}\ntarih : {}""".format(tip,mesaj,QDateTime.currentDateTime().toString("yyyy-MM-dd_hh:mm"))
+            gonderilecek = """mesaj_tipi : {}\nmesaj : {}\ntarih : {}""".format(tip,mesaj,QDateTime.currentDateTime().toString("yyyy-MM-dd_hh:mm:ss"))
             f = open("./gecici","w")
             f.write(gonderilecek)
             f.close()
@@ -77,12 +77,29 @@ class Gonderici(QDialog):
         return okunan
 
     def tum_mesajlar_fonk(self):
-        mesajlar = os.listdir("./smesajlar")
-        self.tum_mesajlar = mesajlar
-
         self.mesaj_liste.clear()
+
+        duzenli_mesajlar = self.mesajlar_oku_sirala()
+        mesajlar = duzenli_mesajlar.keys()
+        sirali_mesajlar = list(mesajlar)
+        sirali_mesajlar.sort()
+        if len(sirali_mesajlar) != 0:
+            for mesaj in sirali_mesajlar:
+                mesaj_ = duzenli_mesajlar[mesaj]
+                ozel_widget = listemadddesi.OzelListeMaddesi(self)
+                ozel_widget.mesaj_id_ekle(mesaj_[2])
+                ozel_widget.mesaj_tipi_ekle(mesaj_[0])
+                ozel_widget.mesaj_ekle(mesaj_[1])
+                ozel_widget.tarih_ekle(mesaj)
+                ozel_widget_item = QListWidgetItem(self.mesaj_liste)
+                ozel_widget_item.setSizeHint(ozel_widget.sizeHint())
+                self.mesaj_liste.setItemWidget(ozel_widget_item,ozel_widget)
+
+    def mesajlar_oku_sirala(self):
+        duzenli_mesajlar = {}
+        mesajlar = os.listdir("./mesajlar")
         for mesaj in mesajlar:
-            okunan = self.yaml_oku("./smesajlar/"+mesaj)
+            okunan = self.yaml_oku("./mesajlar/"+mesaj)
             if okunan == None:
                 pass
             try:
@@ -97,15 +114,8 @@ class Gonderici(QDialog):
                 mesaj_tarihi = okunan["tarih"]
             except:
                 mesaj_tarihi = ""
-            ozel_widget = listemadddesi.OzelListeMaddesi(self)
-            ozel_widget.mesaj_id_ekle(mesaj)
-            ozel_widget.mesaj_tipi_ekle(mesaj_tipi)
-            ozel_widget.mesaj_ekle(mesaj_metni)
-            ozel_widget.tarih_ekle(mesaj_tarihi)
-            ozel_widget_item = QListWidgetItem(self.mesaj_liste)
-            ozel_widget_item.setSizeHint(ozel_widget.sizeHint())
-            self.mesaj_liste.setItemWidget(ozel_widget_item,ozel_widget)
-
+            duzenli_mesajlar[mesaj_tarihi]=[mesaj_tipi,mesaj_metni,mesaj]
+        return duzenli_mesajlar
     def dosyaHashle(self,dosya):
         BUF_SIZE = 65536  # 64k lik parca-chunklar ile 
         sha1 = hashlib.sha1()

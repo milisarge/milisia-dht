@@ -82,10 +82,46 @@ class Okuyucu(QDialog):
 
     def tum_mesajlar_fonk(self):
         self.varolan_mesajlar = self.tum_mesajlar
+        self.mesaj_liste.clear()
+
+        duzenli_mesajlar = self.mesajlar_oku_sirala()
+        mesajlar = duzenli_mesajlar.keys()
+        sirali_mesajlar = list(mesajlar)
+        sirali_mesajlar.sort()
+        if len(sirali_mesajlar) != 0:
+            for mesaj in sirali_mesajlar:
+                mesaj_ = duzenli_mesajlar[mesaj]
+                ozel_widget = listemadddesi.OzelListeMaddesi(self)
+                ozel_widget.okuyucu()
+                ozel_widget.mesaj_id_ekle(mesaj_[2])
+                ozel_widget.mesaj_tipi_ekle(mesaj_[0])
+                ozel_widget.mesaj_ekle(mesaj_[1])
+                ozel_widget.tarih_ekle(mesaj)
+                if mesaj_[2] in self.okunmus_mesajlar:
+                    ozel_widget.okunma_degistir("okundu")
+                else:
+                    ozel_widget.okunma_degistir("okunmadi")
+                ozel_widget_item = QListWidgetItem(self.mesaj_liste)
+                ozel_widget_item.setSizeHint(ozel_widget.sizeHint())
+                self.mesaj_liste.setItemWidget(ozel_widget_item,ozel_widget)
+
+                if mesaj_[2] not in self.varolan_mesajlar:
+                    if mesaj_[0] == "bilgi":
+                        icon = 1
+                    elif mesaj_[0] == "sistem":
+                        icon = 2
+                    elif mesaj_[0] == "kritik":
+                        icon = 3
+                    else:
+                        icon = 0
+                    self.sistem_cekmecesi.showMessage(mesaj_[0], mesaj_[1],
+                                                    QSystemTrayIcon.MessageIcon(icon), 5000)
+                    self.sistem_cekmecesi.setIcon(QIcon("./icons/milis-bildirim-m.png"))
+
+    def mesajlar_oku_sirala(self):
+        duzenli_mesajlar = {}
         mesajlar = os.listdir("./mesajlar")
         self.tum_mesajlar = mesajlar
-
-        self.mesaj_liste.clear()
         for mesaj in mesajlar:
             okunan = self.yaml_oku("./mesajlar/"+mesaj)
             if okunan == None:
@@ -102,37 +138,12 @@ class Okuyucu(QDialog):
                 mesaj_tarihi = okunan["tarih"]
             except:
                 mesaj_tarihi = ""
-            ozel_widget = listemadddesi.OzelListeMaddesi(self)
-            ozel_widget.okuyucu()
-            ozel_widget.mesaj_id_ekle(mesaj)
-            ozel_widget.mesaj_tipi_ekle(mesaj_tipi)
-            ozel_widget.mesaj_ekle(mesaj_metni)
-            ozel_widget.tarih_ekle(mesaj_tarihi)
-            if mesaj in self.okunmus_mesajlar:
-                ozel_widget.okunma_degistir("okundu")
-            else:
-                ozel_widget.okunma_degistir("okunmadi")
-            ozel_widget_item = QListWidgetItem(self.mesaj_liste)
-            ozel_widget_item.setSizeHint(ozel_widget.sizeHint())
-            self.mesaj_liste.setItemWidget(ozel_widget_item,ozel_widget)
-
-            if mesaj not in self.varolan_mesajlar:
-                print(mesaj_tipi)
-                if mesaj_tipi == "bilgi":
-                    icon = 1
-                elif mesaj_tipi == "sistem":
-                    icon = 2
-                elif mesaj_tipi == "kritik":
-                    icon = 3
-                else:
-                    icon = 0
-                self.sistem_cekmecesi.showMessage(mesaj_tipi, mesaj_metni,
-                                                  QSystemTrayIcon.MessageIcon(icon), 5000)
-                self.sistem_cekmecesi.setIcon(QIcon("./icons/milis-bildirim-m.png"))
-
+            duzenli_mesajlar[mesaj_tarihi]=[mesaj_tipi,mesaj_metni,mesaj]
+        return duzenli_mesajlar
 
 if __name__ == "__main__":
     uyg = QApplication(sys.argv)
     okuyucu_pencere = Okuyucu()
     uyg.setOrganizationName('milis-bildirim')
+    uyg.setQuitOnLastWindowClosed(False)
     sys.exit(uyg.exec_())
