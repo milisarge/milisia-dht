@@ -35,7 +35,7 @@ class OzelListeMaddesi(QWidget):
         self.mesaj_tipi.setText("<b>Mesaj Tipi : </b>"+mesaj_tipi)
 
     def mesaj_ekle(self,mesaj):
-        self.mesaj.setText(mesaj)
+        self.mesaj.setText(str(mesaj))
 
     def tarih_ekle(self,tarih):
         self.tarih.setText("<b>"+tarih+"</b>")

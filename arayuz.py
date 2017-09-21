@@ -1,4 +1,7 @@
-
+#!/usr/bin/env python3
+#-*- coding: utf-8 -*-
+# Copyright (c) 2017 Milis İşletim Sistemi
+# Author: sonakinci41
 from PyQt5.QtWidgets import (QDialog, QVBoxLayout, QListWidget,QListWidgetItem, QApplication, QListView,
                              QDesktopWidget, QSystemTrayIcon, QMenu, QAction,qApp)
 from PyQt5.QtCore import Qt, QFileSystemWatcher, QSettings

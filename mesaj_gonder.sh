@@ -8,7 +8,7 @@ elif [ "$1" = "-s" ];then
 else
 	echo "mesaj tipi yanlış!";echo "mesaj_gonder.sh  -b|-s  mesaj_icerik";exit 0
 fi
-zaman=`date +%m-%d-%y.%H:%M:%S`
+zaman=`date +%Y-%m-%d_%H:%M:%S`
 mesaj="$1"
 gdosya=$(mktemp)
 echo "mesaj_tipi : ${mesaj_tip}" > $gdosya
