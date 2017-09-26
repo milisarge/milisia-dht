@@ -6,7 +6,7 @@ from PyQt5.QtWidgets import (QDialog, QVBoxLayout, QListWidget,QListWidgetItem, 
                              QDesktopWidget, QSystemTrayIcon, QMenu, QAction,qApp)
 from PyQt5.QtCore import Qt, QFileSystemWatcher, QSettings
 from PyQt5.QtGui import QIcon
-import os, yaml, sys
+import os, yaml, sys, bildirim,threading
 from ui import listemadddesi, ayarlarui, gonder
 
 
@@ -54,10 +54,17 @@ class Okuyucu(QDialog):
         self.dosya_izleyici = QFileSystemWatcher()
         self.dosya_izleyici.addPath("./mesajlar")
         self.dosya_izleyici.directoryChanged.connect(self.tum_mesajlar_fonk)
+        #################################
+        # Bildirim çalıştırılıyor       #
+        #################################
+        dht = threading.Thread(name='smesajlar_besleme', target=bildirim.dht_baslat)
+        dht.setDaemon(True)
+        dht.start()
+
 
     def mesaj_gonder_fonk(self):
-    	pencere_gonder = gonder.Gonderici(self)
-    	pencere_gonder.show()
+        pencere_gonder = gonder.Gonderici(self)
+        pencere_gonder.show()
 
     def closeEvent(self, event):
         self.settings.setValue('liste', self.okunmus_mesajlar)
