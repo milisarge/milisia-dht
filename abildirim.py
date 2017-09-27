@@ -57,7 +57,7 @@ class Dht():
       sha1.update(anahtar.encode())
       anahtar_hash=sha1.hexdigest()
       return anahtar_hash
-		
+
    def sunucuya_kayit(self,deger,anahtar=None,gorev_bitince="sonlan"):
       """Verilen anahtar değeri ve değeri dht e kayıt eder."""
       if anahtar is None:
@@ -151,7 +151,7 @@ os.makedirs(SMESAJ_DIZINI, exist_ok=True)
 dhtsunucu=None #"192.168.43.207:4222"
 kimlik=str(uuid.UUID(int=uuid.getnode()))
 kimlik=kimlik.split("-")[4]
-		
+
 def ilet(baslik="dht-ileti",message="",sure=3000):
   subprocess.Popen(['notify-send',"--expire-time="+str(sure),baslik, message])
   return
@@ -181,7 +181,6 @@ def zaman_sirali(yol):
 
    
 def smesajlar_besleme():
-
   while 1:
      anahtar="milbis-bildirim"
      dhtbes=Dht()
@@ -195,21 +194,7 @@ def smesajlar_besleme():
                  print(dosya,"besleme yapıldı.")
      print ("besleme 20sn uyumada")
      time.sleep(15)
-              
-#periyodik dht sunucu kaydı için thread tanımlama
-dhtkayit = threading.Thread(name='dht_kayit_islemi', target=dht_kayit_islemi)
-dhtkayit.setDaemon(True)
-dhtkayit.start()
-
-#smesajlar altındaki mesajların beslenmesi
-dhtkayit2 = threading.Thread(name='smesajlar_besleme', target=smesajlar_besleme)
-dhtkayit2.setDaemon(True)
-dhtkayit2.start()
-
-#milisia sunucuları bulmak için (milisia-sunucu) anahtarıyla.
-#dht2=Dht(bs=dhtsunucu)
-#sunucular=dht2.sunucular()
-
+ 
 def dokumanla():
     out = sys.stdout
     sys.stdout = open("dokuman", "w")
@@ -217,25 +202,36 @@ def dokumanla():
     sys.stdout.close()
     sys.stdout = out
 
-#dokumanla()
+def dht_baslat():
+    #periyodik dht sunucu kaydı için thread tanımlama
+    dhtkayit = threading.Thread(name='dht_kayit_islemi', target=dht_kayit_islemi)
+    dhtkayit.setDaemon(True)
+    dhtkayit.start()
 
-while True: 
-   #bildirim kontrolu yapılacak.
-   dht2=Dht(bs=dhtsunucu)
-   dht3=Dht(bs=dhtsunucu)
-   # 8c798d6f0867e8cbdb7f565e9e95388796ef1542 milbis-bildirim
-   #bildirimler aranacak.
-   bildirimler=dht2.ara("milbis-bildirim",3,"yeni bildirim")
-   bildirimler=set(bildirimler)
-   if len(bildirimler) > 0:
-      for bildirim in bildirimler:
-         print (bildirim,"icerik aranıyor")
-         bildirim_icerik=dht3.icerik_ara(bildirim,arasn=3)
-         if bildirim_icerik :
-             open(MESAJ_DIZINI+bildirim,"w").write(bildirim_icerik) 
-             ilet("ileti",bildirim_icerik,BILDIRIM_SURE)
-             print (bildirim,"icerik bulundu--->",bildirim_icerik)
-         else:	
-             print (bildirim,"icerik bulunamadı!") 	
-   print(".")
+    #smesajlar altındaki mesajların beslenmesi
+    dhtkayit2 = threading.Thread(name='smesajlar_besleme', target=smesajlar_besleme)
+    dhtkayit2.setDaemon(True)
+    dhtkayit2.start()
 
+    #milisia sunucuları bulmak için (milisia-sunucu) anahtarıyla.
+    #dht2=Dht(bs=dhtsunucu)
+    #sunucular=dht2.sunucular()
+    while True: 
+       #bildirim kontrolu yapılacak.
+       dht2=Dht(bs=dhtsunucu)
+       dht3=Dht(bs=dhtsunucu)
+       # 8c798d6f0867e8cbdb7f565e9e95388796ef1542 milbis-bildirim
+       #bildirimler aranacak.
+       bildirimler=dht2.ara("milbis-bildirim",3,"yeni bildirim")
+       bildirimler=set(bildirimler)
+       if len(bildirimler) > 0:
+            for bildirim in bildirimler:
+                print (bildirim,"icerik aranıyor")
+                bildirim_icerik=dht3.icerik_ara(bildirim,arasn=3)
+                if bildirim_icerik :
+                    open(MESAJ_DIZINI+bildirim,"w").write(bildirim_icerik) 
+                    ilet("ileti",bildirim_icerik,BILDIRIM_SURE)
+                    print (bildirim,"icerik bulundu--->",bildirim_icerik)
+                else:
+                    print (bildirim,"icerik bulunamadı!") 	
+       print(".")

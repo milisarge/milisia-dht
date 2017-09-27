@@ -6,7 +6,7 @@ from PyQt5.QtWidgets import (QDialog, QVBoxLayout, QListWidget,QListWidgetItem, 
                              QDesktopWidget, QSystemTrayIcon, QMenu, QAction,qApp)
 from PyQt5.QtCore import Qt, QFileSystemWatcher, QSettings
 from PyQt5.QtGui import QIcon
-import os, yaml, sys, bildirim,threading
+import os, yaml, sys, abildirim,threading
 from ui import listemadddesi, ayarlarui, gonder
 
 
