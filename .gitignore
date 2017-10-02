@@ -1,3 +1,5 @@
 mesajlar/*
 smesajlar/*
 *.pyc
+*.liste
+__pycache__/*

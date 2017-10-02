@@ -1,0 +1,2 @@
+#!/bin/sh
+g++ $1 node.cpp sha2.cpp -std=c++11 -O3 -pedantic-errors -DMSGPACK_DISABLE_LEGACY_NIL -DMSGPACK_DISABLE_LEGACY_CONVERT /usr/lib/libopendht.so -L/usr/lib -largon2 -lrt -L/usr/lib/../lib64 /usr/lib/../lib64/libstdc++.so -lm -lreadline -L../src/.libs /usr/lib/libgnutls.so -lz /usr/lib/libp11-kit.so /usr/lib/../lib64/libffi.so -ldl /usr/lib/libidn.so /usr/lib/libtasn1.so -lnettle -lhogweed /lib/libgmp.so -lpthread -Wl,-rpath -Wl,/usr/lib/../lib64 -o $2

@@ -6,11 +6,14 @@ from PyQt5.QtWidgets import (QDialog, QVBoxLayout, QListWidget,QListWidgetItem, 
                              QDesktopWidget, QSystemTrayIcon, QMenu, QAction,qApp)
 from PyQt5.QtCore import Qt, QFileSystemWatcher, QSettings
 from PyQt5.QtGui import QIcon
-import os, yaml, sys, abildirim,threading
+import os, yaml, sys,threading
 from ui import listemadddesi, ayarlarui, gonder
 
 
 class Okuyucu(QDialog):
+    
+    MESAJ_DIZINI = "./mesajlar/"
+    
     def __init__(self,ebeveyn=None):
         super(Okuyucu,self).__init__(ebeveyn)
         kutu = QVBoxLayout()
@@ -32,7 +35,7 @@ class Okuyucu(QDialog):
         self.menu_cekmece.addAction(self.ayarlar_aksiyon)
         self.menu_cekmece.addAction(self.kapat_aksiyon)
         self.sistem_cekmecesi.setContextMenu(self.menu_cekmece)
-        self.sistem_cekmecesi.showMessage("Çalştı","Milis Bildirim Başarıyla Çalıştırıldı",QSystemTrayIcon.MessageIcon(1),5000)
+        self.sistem_cekmecesi.showMessage("Çalıştı","Milis Bildirim Başarıyla Çalıştırıldı",QSystemTrayIcon.MessageIcon(1),5000)
 
         self.mesaj_liste = QListWidget()
         self.mesaj_liste.setSelectionMode(QListView.ExtendedSelection)
@@ -47,19 +50,19 @@ class Okuyucu(QDialog):
         ################################
         self.settings = QSettings()
         self.okunmus_mesajlar = self.settings.value("liste", [], str) or []
-        self.tum_mesajlar = os.listdir("./mesajlar")
+        self.tum_mesajlar = os.listdir(self.MESAJ_DIZINI)
         self.varolan_mesajlar = []
         ################################
         self.tum_mesajlar_fonk()
         self.dosya_izleyici = QFileSystemWatcher()
-        self.dosya_izleyici.addPath("./mesajlar")
+        self.dosya_izleyici.addPath(self.MESAJ_DIZINI)
         self.dosya_izleyici.directoryChanged.connect(self.tum_mesajlar_fonk)
         #################################
         # Bildirim çalıştırılıyor       #
         #################################
-        dht = threading.Thread(name='smesajlar_besleme', target=bildirim.dht_baslat)
-        dht.setDaemon(True)
-        dht.start()
+        #dht = threading.Thread(name='smesajlar_besleme', target=bildirim.dht_baslat)
+        #dht.setDaemon(True)
+        #dht.start()
 
 
     def mesaj_gonder_fonk(self):
@@ -131,10 +134,10 @@ class Okuyucu(QDialog):
 
     def mesajlar_oku_sirala(self):
         duzenli_mesajlar = {}
-        mesajlar = os.listdir("./mesajlar")
+        mesajlar = os.listdir(self.MESAJ_DIZINI)
         self.tum_mesajlar = mesajlar
         for mesaj in mesajlar:
-            okunan = self.yaml_oku("./mesajlar/"+mesaj)
+            okunan = self.yaml_oku(self.MESAJ_DIZINI+mesaj)
             if okunan == None:
                 pass
             try:

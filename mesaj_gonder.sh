@@ -14,5 +14,5 @@ gdosya=$(mktemp)
 echo "mesaj_tipi : ${mesaj_tip}" > $gdosya
 echo "mesaj : ${mesaj_icerik}" >> $gdosya
 echo "tarih : $zaman" >> $gdosya
-ydosya=$(md5sum $gdosya | cut -d' ' -f1)
-cp -rf $gdosya ./smesajlar/$ydosya
+ydosya=$(sha256sum $gdosya | cut -d' ' -f1)
+cp -rf $gdosya ./mesajlar/$ydosya

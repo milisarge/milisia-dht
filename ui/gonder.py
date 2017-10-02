@@ -8,6 +8,8 @@ from ui import listemadddesi, ayarlarui
 
 
 class Gonderici(QDialog):
+    
+    MESAJ_DIZINI="./mesajlar/"
     def __init__(self,ebeveyn=None):
         super(Gonderici,self).__init__(ebeveyn)
         kutu = QVBoxLayout()
@@ -20,7 +22,7 @@ class Gonderici(QDialog):
 
         self.tum_mesajlar_fonk()
         self.dosya_izleyici = QFileSystemWatcher()
-        self.dosya_izleyici.addPath("./smesajlar")
+        self.dosya_izleyici.addPath(self.MESAJ_DIZINI)
         self.dosya_izleyici.directoryChanged.connect(self.tum_mesajlar_fonk)
 
         kutu_h = QHBoxLayout()
@@ -55,7 +57,7 @@ class Gonderici(QDialog):
             f = open("./gecici","w")
             f.write(gonderilecek)
             f.close()
-            shutil.move("./gecici", "./smesajlar/"+self.dosyaHashle("./gecici"))
+            shutil.move("./gecici", self.MESAJ_DIZINI+self.dosyaHashle("./gecici"))
             QMessageBox.information(self,"Gönderildi","Mesajınız başarıyla gönderidi.")
             self.gonderilen_text.clear()
             self.tum_mesajlar_fonk()
@@ -99,9 +101,9 @@ class Gonderici(QDialog):
 
     def mesajlar_oku_sirala(self):
         duzenli_mesajlar = {}
-        mesajlar = os.listdir("./smesajlar")
+        mesajlar = os.listdir(self.MESAJ_DIZINI)
         for mesaj in mesajlar:
-            okunan = self.yaml_oku("./smesajlar/"+mesaj)
+            okunan = self.yaml_oku(self.MESAJ_DIZINI+mesaj)
             if okunan == None:
                 pass
             try:
@@ -121,12 +123,12 @@ class Gonderici(QDialog):
 
     def dosyaHashle(self,dosya):
         BUF_SIZE = 65536  # 64k lik parca-chunklar ile 
-        sha1 = hashlib.sha1()
+        sha256 = hashlib.sha256()
         with open(dosya, 'rb') as f:
             while True:
                 data = f.read(BUF_SIZE)
                 if not data:
                     break
-                sha1.update(data)
-        dosya_hash=sha1.hexdigest()
+                sha256.update(data)
+        dosya_hash=sha256.hexdigest()
         return str(dosya_hash)
