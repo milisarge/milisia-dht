@@ -123,30 +123,25 @@ void besleme_yap(Milis::Node& node){
 			icerik=dosya_icerik_al(bdosya) ;
 			if (sha256(icerik) == bdosya){
 				std::cout << "içerik doğrulandı-besleme yapılıyor." << std::endl;
-				
-				//dosya isminin beslenmesi
-				//auto sonuc=gonder(node,BILDIRIM_ANAHTAR,bdosya);
-				dht::Blob blob {bdosya.begin(), bdosya.end()};
-				auto sonuc=node.put(BILDIRIM_ANAHTAR, std::move(blob));
-				
-				std::cout << sonuc << ":isim besleme" << std::endl;
 				//dosya içeriğinin beslenmesi
-				if(sonuc){
-					std::cout << "<<<<dosya isim besleme yapıldı>>>>" << std::endl;
-					std::cout << bdosya << " -- icerik gonderilmeye çalışılyor:" << std::endl;
-					
-					//auto sonuc_ic=gonder(node,bdosya,icerik);
-					dht::Blob blob2 {icerik.begin(), icerik.end()};
-					auto sonuc_ic=node.put(bdosya, std::move(blob2));
-					
-					std::cout << sonuc_ic << ":icerik besleme" << std::endl;
-					if(sonuc_ic){
-						std::cout << "<<<<dosya içerik besleme yapıldı>>>>" << std::endl;
+				//auto sonuc_ic=gonder(node,bdosya,icerik);
+				dht::Blob blob2 {icerik.begin(), icerik.end()};
+				auto sonuc_ic=node.put(bdosya, std::move(blob2));
+				std::cout << sonuc_ic << ":icerik besleme" << std::endl;
+				//dosya isminin beslenmesi
+				if(sonuc_ic){
+					std::cout << "<<<<dosya içerik besleme yapıldı>>>>" << std::endl;
+					//auto sonuc=gonder(node,BILDIRIM_ANAHTAR,bdosya);
+					dht::Blob blob {bdosya.begin(), bdosya.end()};
+					auto sonuc=node.put(BILDIRIM_ANAHTAR, std::move(blob));
+					std::cout << sonuc << ":isim besleme" << std::endl;
+					if(sonuc){
+						std::cout << "<<<<dosya isim besleme yapıldı>>>>" << std::endl;
 					}else{
-						std::cout << "<<<<dosya içerik  besleme olumsuz>>>>" << std::endl;
+						std::cout << "<<<<dosya isim besleme olumsuz>>>>" << std::endl;
 					}
 				}else{
-					std::cout << "<<<<dosya isim besleme olumsuz>>>>" << std::endl;
+					std::cout << "<<<<dosya içerik  besleme olumsuz>>>>" << std::endl;
 				}
 				
 			}else{
