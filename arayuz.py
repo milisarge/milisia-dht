@@ -140,6 +140,8 @@ class Okuyucu(QDialog):
                 ozel_widget.mesaj_tipi_ekle(mesaj_[0])
                 ozel_widget.mesaj_ekle(mesaj_[1])
                 ozel_widget.tarih_ekle(mesaj)
+                ozel_widget.gonderen_ekle(mesaj_[3])
+                ozel_widget.gonderen_onay_ekle(mesaj_[3])
                 if mesaj_[2] in self.okunmus_mesajlar:
                     ozel_widget.okunma_degistir("okundu")
                 else:
@@ -181,7 +183,15 @@ class Okuyucu(QDialog):
                 mesaj_tarihi = okunan["tarih"]
             except:
                 mesaj_tarihi = ""
-            duzenli_mesajlar[mesaj_tarihi]=[mesaj_tipi,mesaj_metni,mesaj]
+            try:
+                gonderen = okunan["gonderen"]
+            except:
+                gonderen = ""
+            try:
+                gonderen_onay = okunan["gonderen_onay"]
+            except:
+                gonderen_onay = ""
+            duzenli_mesajlar[mesaj_tarihi]=[mesaj_tipi,mesaj_metni,mesaj,gonderen,gonderen_onay]
         return duzenli_mesajlar
 
 if __name__ == "__main__":

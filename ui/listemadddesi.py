@@ -11,6 +11,13 @@ class OzelListeMaddesi(QWidget):
         self.mesaj_tipi = QLabel()
         kutu.addWidget(self.mesaj_tipi)
 
+        self.alt_kutu = QHBoxLayout()
+        kutu.addLayout(self.alt_kutu)
+        self.gonderen = QLabel()
+        self.alt_kutu.addWidget(self.gonderen)
+        self.gonderen_onay = QLabel()
+        self.alt_kutu.addWidget(self.gonderen_onay)
+
         self.mesaj = QTextEdit()
         self.mesaj.setReadOnly(True)
         kutu.addWidget(self.mesaj)
@@ -48,3 +55,9 @@ class OzelListeMaddesi(QWidget):
             self.okunma.setChecked(True)
             self.okunma.setDisabled(True)
             self.ebeveyn.okunmus_mesajlar.append(self.mesaj_id)
+
+    def gonderen_ekle(self,gonderen):
+        self.gonderen.setText("<b>Gönderen : </b>"+gonderen)
+
+    def gonderen_onay_ekle(self,gonderen_onay):
+        self.gonderen_onay.setText("<b>Onay : </b>"+gonderen_onay)
