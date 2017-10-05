@@ -232,7 +232,7 @@ void arama(Milis::Node& node,std::string& aranan){
 int main(int argc, char *argv[]) {
     std::string aranan,anahtar,deger;
     int beklenecek_sn;
-    beklenecek_sn=8;
+    beklenecek_sn=10;
     int m_dizin= system("mkdir -p mesajlar");
     if (m_dizin){return 0;}
     //std::cout << dht::InfoHash::get(BILDIRIM_ANAHTAR) << std::endl; 

@@ -6,7 +6,7 @@ from PyQt5.QtWidgets import (QDialog, QVBoxLayout, QListWidget,QListWidgetItem, 
                              QDesktopWidget, QSystemTrayIcon, QMenu, QAction,qApp)
 from PyQt5.QtCore import Qt, QFileSystemWatcher, QSettings
 from PyQt5.QtGui import QIcon
-import os, yaml, sys,threading
+import os,os.path, yaml, sys,threading
 from ui import listemadddesi, ayarlarui, gonder
 
 
@@ -88,8 +88,37 @@ class Okuyucu(QDialog):
         self.sistem_cekmecesi.setIcon(QIcon("./icons/milis-bildirim.png"))
         self.show()
 
-    def yaml_oku(self,url):
-        with open(url, 'r') as f:
+    def imza_kontrol(self,konum,dosya):
+        sgd="/tmp/"+dosya+".cikti"
+        dogrulama="/tmp/"+dosya+".dogrula"
+        os.system("rm -rf "+sgd)
+        os.system("rm -rf "+dogrulama)
+        os.system("gpg --output "+sgd +" "+konum+dosya)
+        os.system("gpg --status-fd 1 --no-default-keyring --verify "+konum+dosya+" > "+dogrulama)
+        yol=konum+dosya
+        gonderen="anonim"
+        gonderen_onay="geçersiz"
+        with open(dogrulama) as f:
+            satirlar = f.readlines()
+        durum=False
+        if os.path.isfile(sgd):
+            yol=sgd
+            durum=True
+            for satir in satirlar:
+                if "ERRSIG" in satir:
+                    gonderen=satir.split()[2]
+                    break
+                if "GOODSIG" in satir:
+                    gonderen=satir.split()[-1]
+                    gonderen_onay="geçerli"
+                    break
+        os.system("rm -rf "+dogrulama)
+        return durum,yol,gonderen,gonderen_onay
+    
+    
+    def yaml_oku(self,dosya):
+        durum,yol,gonderen,gonderen_onay=self.imza_kontrol(self.MESAJ_DIZINI,dosya)
+        with open(yol, 'r') as f:
             okunan = yaml.load(f)
         return okunan
 
@@ -137,7 +166,7 @@ class Okuyucu(QDialog):
         mesajlar = os.listdir(self.MESAJ_DIZINI)
         self.tum_mesajlar = mesajlar
         for mesaj in mesajlar:
-            okunan = self.yaml_oku(self.MESAJ_DIZINI+mesaj)
+            okunan = self.yaml_oku(mesaj)
             if okunan == None:
                 pass
             try:
