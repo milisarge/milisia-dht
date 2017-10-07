@@ -53,8 +53,12 @@ class Okuyucu(QDialog):
         self.okunmus_mesajlar = self.settings.value("liste", [], str) or []
         self.tum_mesajlar = os.listdir(self.MESAJ_DIZINI)
         self.varolan_mesajlar = []
-        self.gecersizleri_goster = True
-        self.anonimleri_goster = True
+        try:
+            self.gecersizleri_goster = int(self.settings.value("gecersizleri_goster"))
+            self.anonimleri_goster = int(self.settings.value("anonimleri_goster"))
+        except:
+            self.gecersizleri_goster = 1
+            self.anonimleri_goster = 1
         ################################
         self.tum_mesajlar_fonk()
         self.dosya_izleyici = QFileSystemWatcher()
@@ -170,7 +174,7 @@ class Okuyucu(QDialog):
         self.tum_mesajlar = mesajlar
         for mesaj in mesajlar:
             okunan, gonderen, gonderen_onay = self.yaml_oku(mesaj)
-            if gonderen_onay == "gecersiz" and self.gecersizleri_goster == False:
+            if gonderen_onay == "geçersiz" and self.gecersizleri_goster == False:
                 pass
             elif gonderen == "anonim" and self.anonimleri_goster == False:
                 pass

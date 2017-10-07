@@ -13,6 +13,7 @@ class Gonderici(QDialog):
     def __init__(self,ebeveyn=None):
         super(Gonderici,self).__init__(ebeveyn)
         kutu = QVBoxLayout()
+        self.ebeveyn = ebeveyn
         self.setLayout(kutu)
         kutu.setContentsMargins(5,5,5,5)
 
@@ -74,15 +75,9 @@ class Gonderici(QDialog):
         self.sistem_cekmecesi.setIcon(QIcon("./icons/milis-bildirim.png"))
         self.show()
 
-    def yaml_oku(self,url):
-        with open(url, 'r') as f:
-            okunan = yaml.load(f)
-        return okunan
-
     def tum_mesajlar_fonk(self):
         self.mesaj_liste.clear()
-
-        duzenli_mesajlar = self.mesajlar_oku_sirala()
+        duzenli_mesajlar = self.ebeveyn.mesajlar_oku_sirala()
         mesajlar = duzenli_mesajlar.keys()
         sirali_mesajlar = list(mesajlar)
         sirali_mesajlar.sort()
@@ -95,31 +90,11 @@ class Gonderici(QDialog):
                 ozel_widget.mesaj_tipi_ekle(mesaj_[0])
                 ozel_widget.mesaj_ekle(mesaj_[1])
                 ozel_widget.tarih_ekle(mesaj)
+                ozel_widget.gonderen_ekle(mesaj_[3])
+                ozel_widget.gonderen_onay_ekle(mesaj_[4])
                 ozel_widget_item = QListWidgetItem(self.mesaj_liste)
                 ozel_widget_item.setSizeHint(ozel_widget.sizeHint())
-                self.mesaj_liste.setItemWidget(ozel_widget_item,ozel_widget)
-
-    def mesajlar_oku_sirala(self):
-        duzenli_mesajlar = {}
-        mesajlar = os.listdir(self.MESAJ_DIZINI)
-        for mesaj in mesajlar:
-            okunan = self.yaml_oku(self.MESAJ_DIZINI+mesaj)
-            if okunan == None:
-                pass
-            try:
-                mesaj_tipi = okunan["mesaj_tipi"]
-            except:
-                mesaj_tipi = ""
-            try:
-                mesaj_metni = okunan["mesaj"]
-            except:
-                mesaj_metni = ""
-            try:
-                mesaj_tarihi = okunan["tarih"]
-            except:
-                mesaj_tarihi = ""
-            duzenli_mesajlar[mesaj_tarihi]=[mesaj_tipi,mesaj_metni,mesaj]
-        return duzenli_mesajlar
+                self.mesaj_liste.setItemWidget(ozel_widget_item, ozel_widget)
 
     def dosyaHashle(self,dosya):
         BUF_SIZE = 65536  # 64k lik parca-chunklar ile 
