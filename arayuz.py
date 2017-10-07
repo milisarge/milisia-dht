@@ -1,24 +1,23 @@
 #!/usr/bin/env python3
-#-*- coding: utf-8 -*-
+# -*- coding: utf-8 -*-
 # Copyright (c) 2017 Milis İşletim Sistemi
 # Author: sonakinci41
-from PyQt5.QtWidgets import (QDialog, QVBoxLayout, QListWidget,QListWidgetItem, QApplication, QListView,
-                             QDesktopWidget, QSystemTrayIcon, QMenu, QAction,qApp)
+from PyQt5.QtWidgets import (QDialog, QVBoxLayout, QListWidget, QListWidgetItem, QApplication, QListView,
+                             QDesktopWidget, QSystemTrayIcon, QMenu, QAction, qApp)
 from PyQt5.QtCore import Qt, QFileSystemWatcher, QSettings
 from PyQt5.QtGui import QIcon
-import os,os.path, yaml, sys,threading
+import os, os.path, yaml, sys, threading
 from ui import listemadddesi, ayarlarui, gonder
 
 
 class Okuyucu(QDialog):
-    
     MESAJ_DIZINI = "./mesajlar/"
-    
-    def __init__(self,ebeveyn=None):
-        super(Okuyucu,self).__init__(ebeveyn)
+
+    def __init__(self, ebeveyn=None):
+        super(Okuyucu, self).__init__(ebeveyn)
         kutu = QVBoxLayout()
         self.setLayout(kutu)
-        kutu.setContentsMargins(0,0,0,0)
+        kutu.setContentsMargins(0, 0, 0, 0)
 
         self.sistem_cekmecesi = QSystemTrayIcon(self)
         self.sistem_cekmecesi.setIcon(QIcon("./icons/milis-bildirim.png"))
@@ -26,16 +25,18 @@ class Okuyucu(QDialog):
         self.sistem_cekmecesi.show()
 
         self.menu_cekmece = QMenu(self)
-        self.mesaj_oku_aksiyon = QAction("Mesaj Oku",self,statusTip="MesajOku",triggered=self.mesaj_oku_fonk)
-        self.mesaj_gonder_aksiyon = QAction("Mesaj Gönder",self,statusTip="MesajGonder",triggered=self.mesaj_gonder_fonk)
-        self.ayarlar_aksiyon = QAction("Ayarlar",self,statusTip="Ayarlar",triggered=self.ayarlar_fonk)
-        self.kapat_aksiyon = QAction("Kapat",self,statusTip="Kapat",triggered=self.kapat_fonk)
+        self.mesaj_oku_aksiyon = QAction("Mesaj Oku", self, statusTip="MesajOku", triggered=self.mesaj_oku_fonk)
+        self.mesaj_gonder_aksiyon = QAction("Mesaj Gönder", self, statusTip="MesajGonder",
+                                            triggered=self.mesaj_gonder_fonk)
+        self.ayarlar_aksiyon = QAction("Ayarlar", self, statusTip="Ayarlar", triggered=self.ayarlar_fonk)
+        self.kapat_aksiyon = QAction("Kapat", self, statusTip="Kapat", triggered=self.kapat_fonk)
         self.menu_cekmece.addAction(self.mesaj_oku_aksiyon)
         self.menu_cekmece.addAction(self.mesaj_gonder_aksiyon)
         self.menu_cekmece.addAction(self.ayarlar_aksiyon)
         self.menu_cekmece.addAction(self.kapat_aksiyon)
         self.sistem_cekmecesi.setContextMenu(self.menu_cekmece)
-        self.sistem_cekmecesi.showMessage("Çalıştı","Milis Bildirim Başarıyla Çalıştırıldı",QSystemTrayIcon.MessageIcon(1),5000)
+        self.sistem_cekmecesi.showMessage("Çalıştı", "Milis Bildirim Başarıyla Çalıştırıldı",
+                                          QSystemTrayIcon.MessageIcon(1), 5000)
 
         self.mesaj_liste = QListWidget()
         self.mesaj_liste.setSelectionMode(QListView.ExtendedSelection)
@@ -45,13 +46,15 @@ class Okuyucu(QDialog):
         s = QDesktopWidget().screenGeometry(0)
         self.setFixedHeight(s.height())
         self.setWindowFlags(Qt.Popup)
-        self.move(s.width()-285,0)
+        self.move(s.width() - 285, 0)
 
         ################################
         self.settings = QSettings()
         self.okunmus_mesajlar = self.settings.value("liste", [], str) or []
         self.tum_mesajlar = os.listdir(self.MESAJ_DIZINI)
         self.varolan_mesajlar = []
+        self.gecersizleri_goster = True
+        self.anonimleri_goster = True
         ################################
         self.tum_mesajlar_fonk()
         self.dosya_izleyici = QFileSystemWatcher()
@@ -60,10 +63,9 @@ class Okuyucu(QDialog):
         #################################
         # Bildirim çalıştırılıyor       #
         #################################
-        #dht = threading.Thread(name='smesajlar_besleme', target=bildirim.dht_baslat)
-        #dht.setDaemon(True)
-        #dht.start()
-
+        # dht = threading.Thread(name='smesajlar_besleme', target=bildirim.dht_baslat)
+        # dht.setDaemon(True)
+        # dht.start()
 
     def mesaj_gonder_fonk(self):
         pencere_gonder = gonder.Gonderici(self)
@@ -80,7 +82,7 @@ class Okuyucu(QDialog):
     def kapat_fonk(self):
         qApp.quit()
 
-    def sistem_cekmecesi_tiklandi(self,value):
+    def sistem_cekmecesi_tiklandi(self, value):
         if value == self.sistem_cekmecesi.DoubleClick:
             self.mesaj_oku_fonk()
 
@@ -88,39 +90,38 @@ class Okuyucu(QDialog):
         self.sistem_cekmecesi.setIcon(QIcon("./icons/milis-bildirim.png"))
         self.show()
 
-    def imza_kontrol(self,konum,dosya):
-        sgd="/tmp/"+dosya+".cikti"
-        dogrulama="/tmp/"+dosya+".dogrula"
-        os.system("rm -rf "+sgd)
-        os.system("rm -rf "+dogrulama)
-        os.system("gpg --output "+sgd +" "+konum+dosya)
-        os.system("gpg --status-fd 1 --no-default-keyring --verify "+konum+dosya+" > "+dogrulama)
-        yol=konum+dosya
-        gonderen="anonim"
-        gonderen_onay="geçersiz"
+    def imza_kontrol(self, konum, dosya):
+        sgd = "/tmp/" + dosya + ".cikti"
+        dogrulama = "/tmp/" + dosya + ".dogrula"
+        os.system("rm -rf " + sgd)
+        os.system("rm -rf " + dogrulama)
+        os.system("gpg --output " + sgd + " " + konum + dosya)
+        os.system("gpg --status-fd 1 --no-default-keyring --verify " + konum + dosya + " > " + dogrulama)
+        yol = konum + dosya
+        gonderen = "anonim"
+        gonderen_onay = "geçersiz"
         with open(dogrulama) as f:
             satirlar = f.readlines()
-        durum=False
+        durum = False
         if os.path.isfile(sgd):
-            yol=sgd
-            durum=True
+            yol = sgd
+            durum = True
             for satir in satirlar:
                 if "ERRSIG" in satir:
-                    gonderen=satir.split()[2]
+                    gonderen = satir.split()[2]
                     break
                 if "GOODSIG" in satir:
-                    gonderen=satir.split()[-1]
-                    gonderen_onay="geçerli"
+                    gonderen = satir.split()[-1]
+                    gonderen_onay = "geçerli"
                     break
-        os.system("rm -rf "+dogrulama)
-        return durum,yol,gonderen,gonderen_onay
-    
-    
-    def yaml_oku(self,dosya):
-        durum,yol,gonderen,gonderen_onay=self.imza_kontrol(self.MESAJ_DIZINI,dosya)
+        os.system("rm -rf " + dogrulama)
+        return durum, yol, gonderen, gonderen_onay
+
+    def yaml_oku(self, dosya):
+        durum, yol, gonderen, gonderen_onay = self.imza_kontrol(self.MESAJ_DIZINI, dosya)
         with open(yol, 'r') as f:
             okunan = yaml.load(f)
-        return okunan,gonderen,gonderen_onay
+        return okunan, gonderen, gonderen_onay
 
     def tum_mesajlar_fonk(self):
         self.varolan_mesajlar = self.tum_mesajlar
@@ -140,13 +141,15 @@ class Okuyucu(QDialog):
                 ozel_widget.mesaj_tipi_ekle(mesaj_[0])
                 ozel_widget.mesaj_ekle(mesaj_[1])
                 ozel_widget.tarih_ekle(mesaj)
+                ozel_widget.gonderen_ekle(mesaj_[3])
+                ozel_widget.gonderen_onay_ekle(mesaj_[4])
                 if mesaj_[2] in self.okunmus_mesajlar:
                     ozel_widget.okunma_degistir("okundu")
                 else:
                     ozel_widget.okunma_degistir("okunmadi")
                 ozel_widget_item = QListWidgetItem(self.mesaj_liste)
                 ozel_widget_item.setSizeHint(ozel_widget.sizeHint())
-                self.mesaj_liste.setItemWidget(ozel_widget_item,ozel_widget)
+                self.mesaj_liste.setItemWidget(ozel_widget_item, ozel_widget)
 
                 if mesaj_[2] not in self.varolan_mesajlar:
                     if mesaj_[0] == "bilgi":
@@ -158,7 +161,7 @@ class Okuyucu(QDialog):
                     else:
                         icon = 0
                     self.sistem_cekmecesi.showMessage(mesaj_[0], mesaj_[1],
-                                                    QSystemTrayIcon.MessageIcon(icon), 5000)
+                                                      QSystemTrayIcon.MessageIcon(icon), 5000)
                     self.sistem_cekmecesi.setIcon(QIcon("./icons/milis-bildirim-m.png"))
 
     def mesajlar_oku_sirala(self):
@@ -166,23 +169,31 @@ class Okuyucu(QDialog):
         mesajlar = os.listdir(self.MESAJ_DIZINI)
         self.tum_mesajlar = mesajlar
         for mesaj in mesajlar:
-            okunan,gonderen,gonderen_onay = self.yaml_oku(mesaj)
-            if okunan == None:
+            okunan, gonderen, gonderen_onay = self.yaml_oku(mesaj)
+            if gonderen_onay == "gecersiz" and self.gecersizleri_goster == False:
                 pass
-            try:
-                mesaj_tipi = okunan["mesaj_tipi"]
-            except:
-                mesaj_tipi = ""
-            try:
-                mesaj_metni = okunan["mesaj"]
-            except:
-                mesaj_metni = ""
-            try:
-                mesaj_tarihi = okunan["tarih"]
-            except:
-                mesaj_tarihi = ""
-            duzenli_mesajlar[mesaj_tarihi]=[mesaj_tipi,mesaj_metni,mesaj]
+            elif gonderen == "anonim" and self.anonimleri_goster == False:
+                pass
+            else:
+                if okunan == None:
+                    pass
+                try:
+                    mesaj_tipi = okunan["mesaj_tipi"]
+                except:
+                    mesaj_tipi = ""
+                try:
+                    mesaj_metni = okunan["mesaj"]
+                except:
+                    mesaj_metni = ""
+                try:
+                    mesaj_tarihi = okunan["tarih"]
+                except:
+                    mesaj_tarihi = ""
+                if gonderen[0] == "<" and gonderen[-1] == ">":
+                    gonderen = gonderen[1:-1]
+                duzenli_mesajlar[mesaj_tarihi] = [mesaj_tipi, mesaj_metni, mesaj, gonderen, gonderen_onay]
         return duzenli_mesajlar
+
 
 if __name__ == "__main__":
     uyg = QApplication(sys.argv)

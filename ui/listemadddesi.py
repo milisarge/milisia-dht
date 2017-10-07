@@ -11,12 +11,10 @@ class OzelListeMaddesi(QWidget):
         self.mesaj_tipi = QLabel()
         kutu.addWidget(self.mesaj_tipi)
 
-        self.alt_kutu = QHBoxLayout()
-        kutu.addLayout(self.alt_kutu)
         self.gonderen = QLabel()
-        self.alt_kutu.addWidget(self.gonderen)
+        kutu.addWidget(self.gonderen)
         self.gonderen_onay = QLabel()
-        self.alt_kutu.addWidget(self.gonderen_onay)
+        kutu.addWidget(self.gonderen_onay)
 
         self.mesaj = QTextEdit()
         self.mesaj.setReadOnly(True)
