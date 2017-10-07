@@ -120,7 +120,7 @@ class Okuyucu(QDialog):
         durum,yol,gonderen,gonderen_onay=self.imza_kontrol(self.MESAJ_DIZINI,dosya)
         with open(yol, 'r') as f:
             okunan = yaml.load(f)
-        return okunan
+        return okunan,gonderen,gonderen_onay
 
     def tum_mesajlar_fonk(self):
         self.varolan_mesajlar = self.tum_mesajlar
@@ -140,8 +140,6 @@ class Okuyucu(QDialog):
                 ozel_widget.mesaj_tipi_ekle(mesaj_[0])
                 ozel_widget.mesaj_ekle(mesaj_[1])
                 ozel_widget.tarih_ekle(mesaj)
-                ozel_widget.gonderen_ekle(mesaj_[3])
-                ozel_widget.gonderen_onay_ekle(mesaj_[3])
                 if mesaj_[2] in self.okunmus_mesajlar:
                     ozel_widget.okunma_degistir("okundu")
                 else:
@@ -168,7 +166,7 @@ class Okuyucu(QDialog):
         mesajlar = os.listdir(self.MESAJ_DIZINI)
         self.tum_mesajlar = mesajlar
         for mesaj in mesajlar:
-            okunan = self.yaml_oku(mesaj)
+            okunan,gonderen,gonderen_onay = self.yaml_oku(mesaj)
             if okunan == None:
                 pass
             try:
@@ -183,15 +181,7 @@ class Okuyucu(QDialog):
                 mesaj_tarihi = okunan["tarih"]
             except:
                 mesaj_tarihi = ""
-            try:
-                gonderen = okunan["gonderen"]
-            except:
-                gonderen = ""
-            try:
-                gonderen_onay = okunan["gonderen_onay"]
-            except:
-                gonderen_onay = ""
-            duzenli_mesajlar[mesaj_tarihi]=[mesaj_tipi,mesaj_metni,mesaj,gonderen,gonderen_onay]
+            duzenli_mesajlar[mesaj_tarihi]=[mesaj_tipi,mesaj_metni,mesaj]
         return duzenli_mesajlar
 
 if __name__ == "__main__":
