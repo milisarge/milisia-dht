@@ -12,7 +12,7 @@ from ui import listemadddesi, ayarlarui, gonder
 
 class Okuyucu(QDialog):
     MESAJ_DIZINI = "./mesajlar/"
-
+    BILDIRIM_SUREC= "/opt/milisia-dht/bildirim"
     def __init__(self, ebeveyn=None):
         super(Okuyucu, self).__init__(ebeveyn)
         kutu = QVBoxLayout()
@@ -93,7 +93,14 @@ class Okuyucu(QDialog):
     def mesaj_oku_fonk(self):
         self.sistem_cekmecesi.setIcon(QIcon("./icons/milis-bildirim.png"))
         self.show()
-
+    
+    def surec_kontrol(BILDIRIM_SUREC):
+        _surec = os.popen("ps -Af").read()
+        surec_adet = _surec.count(BILDIRIM_SUREC)
+        if surec_adet > 0:
+            return True
+        return False
+    
     def imza_kontrol(self, konum, dosya):
         sgd = "/tmp/" + dosya + ".cikti"
         dogrulama = "/tmp/" + dosya + ".dogrula"
