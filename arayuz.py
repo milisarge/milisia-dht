@@ -12,7 +12,8 @@ from ui import listemadddesi, ayarlarui, gonder
 
 class Okuyucu(QDialog):
     MESAJ_DIZINI = "./mesajlar/"
-    BILDIRIM_SUREC= "/opt/milisia-dht/bildirim"
+    ANADZIN=os.getcwd()
+    BILDIRIM_SUREC= ANADIZIN+"bildirim"
     def __init__(self, ebeveyn=None):
         super(Okuyucu, self).__init__(ebeveyn)
         kutu = QVBoxLayout()
