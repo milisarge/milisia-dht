@@ -12,7 +12,7 @@ from ui import listemadddesi, ayarlarui, gonder
 
 class Okuyucu(QDialog):
     MESAJ_DIZINI = "./mesajlar/"
-    BILDIRIM_SUREC= os.getcwd()+"bildirim"
+    BILDIRIM_SUREC= os.getcwd()+"/"+"bildirim"
     def __init__(self, ebeveyn=None):
         super(Okuyucu, self).__init__(ebeveyn)
         kutu = QVBoxLayout()
@@ -100,7 +100,7 @@ class Okuyucu(QDialog):
         print("######################")
         print(self.surec_kontrol())
         if not self.surec_kontrol():
-            subprocess.Popen([os.getcwd()+"/bildirim"])
+            subprocess.Popen([self.BILDIRIM_SUREC])
 
 
     def surec_kontrol(self):
