@@ -4,16 +4,15 @@
 # Author: sonakinci41
 from PyQt5.QtWidgets import (QDialog, QVBoxLayout, QListWidget, QListWidgetItem, QApplication, QListView,
                              QDesktopWidget, QSystemTrayIcon, QMenu, QAction, qApp)
-from PyQt5.QtCore import Qt, QFileSystemWatcher, QSettings
+from PyQt5.QtCore import Qt, QFileSystemWatcher, QSettings, QTimer
 from PyQt5.QtGui import QIcon
-import os, os.path, yaml, sys, threading
+import os, yaml, sys, subprocess
 from ui import listemadddesi, ayarlarui, gonder
 
 
 class Okuyucu(QDialog):
     MESAJ_DIZINI = "./mesajlar/"
-    ANADZIN=os.getcwd()
-    BILDIRIM_SUREC= ANADIZIN+"bildirim"
+    BILDIRIM_SUREC= os.getcwd()+"bildirim"
     def __init__(self, ebeveyn=None):
         super(Okuyucu, self).__init__(ebeveyn)
         kutu = QVBoxLayout()
@@ -68,9 +67,11 @@ class Okuyucu(QDialog):
         #################################
         # Bildirim çalıştırılıyor       #
         #################################
-        # dht = threading.Thread(name='smesajlar_besleme', target=bildirim.dht_baslat)
-        # dht.setDaemon(True)
-        # dht.start()
+        zamanlayici = QTimer(self)
+        zamanlayici.setInterval(6000)
+        zamanlayici.timeout.connect(self.bildirim_calistir)
+        zamanlayici.start()
+
 
     def mesaj_gonder_fonk(self):
         pencere_gonder = gonder.Gonderici(self)
@@ -94,10 +95,17 @@ class Okuyucu(QDialog):
     def mesaj_oku_fonk(self):
         self.sistem_cekmecesi.setIcon(QIcon("./icons/milis-bildirim.png"))
         self.show()
-    
-    def surec_kontrol(BILDIRIM_SUREC):
+
+    def bildirim_calistir(self):
+        print("######################")
+        print(self.surec_kontrol())
+        if not self.surec_kontrol():
+            subprocess.Popen([os.getcwd()+"/bildirim"])
+
+
+    def surec_kontrol(self):
         _surec = os.popen("ps -Af").read()
-        surec_adet = _surec.count(BILDIRIM_SUREC)
+        surec_adet = _surec.count(self.BILDIRIM_SUREC)
         if surec_adet > 0:
             return True
         return False
