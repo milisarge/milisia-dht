@@ -12,7 +12,7 @@ class Ayarlar(QDialog):
         self.gonderen_cb = QCheckBox("Anonim mesajları göster")
         self.gonderen_cb.stateChanged.connect(self.gonderen_cb_degisti)
         kutu.addWidget(self.gonderen_cb)
-        self.gonderen_onay_cb = QCheckBox("Onay alamış mesajları göster")
+        self.gonderen_onay_cb = QCheckBox("Onay almamış mesajları göster")
         self.gonderen_onay_cb.stateChanged.connect(self.gonderen_onay_degisti)
         kutu.addWidget(self.gonderen_onay_cb)
 

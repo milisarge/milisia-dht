@@ -13,6 +13,7 @@ from ui import listemadddesi, ayarlarui, gonder
 class Okuyucu(QDialog):
     MESAJ_DIZINI = "./mesajlar/"
     BILDIRIM_SUREC= os.getcwd()+"/"+"bildirim"
+    BILDIRIM_SUREC_KAPAT= "killall -9 "+os.getcwd()+"/"+"bildirim"
     def __init__(self, ebeveyn=None):
         super(Okuyucu, self).__init__(ebeveyn)
         kutu = QVBoxLayout()
@@ -86,6 +87,7 @@ class Okuyucu(QDialog):
         ayarlar_pencere.show()
 
     def kapat_fonk(self):
+        os.system(self.BILDIRIM_SUREC_KAPAT)
         qApp.quit()
 
     def sistem_cekmecesi_tiklandi(self, value):
