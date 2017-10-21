@@ -14,3 +14,8 @@
 * Opendht
 * Python3-Qt5
 
+## Çalıştırma
+ 
+ ./arayuz.py
+ 
+ 
