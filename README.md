@@ -11,8 +11,8 @@
 
 ## Gerekli Kütüphaneler
 
-* Opendht
-* Python3-Qt5
+* Opendht (mps kur opendht)
+* Python3-Qt5 (mps kur python3-qt5)
 
 ## Çalıştırma
  
