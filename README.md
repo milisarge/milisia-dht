@@ -1,4 +1,4 @@
-# Milisia Ağı Birebir(P2P) DHT Tabanlı Haberleşme 
+# Milisia Ağı DHT Tabanlı Haberleşme 
 
 * Kademlia DHT kütüphanesi(<a href=https://github.com/savoirfairelinux/opendht>opendht</a>) kullanılarak durdurulamayan,uygulamayı kullananlar tarafından sürekli beslenebilen mesajlaşma altyapısı oluşturulmuştur.
 * Bunun ilk etapta Milis Linux için toplu iletimde bulunabilen bildirim sistemi olarak kullanılması öngörülmüştür.
