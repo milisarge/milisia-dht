@@ -6,8 +6,8 @@
 * Bildirim oluşturulan kullanıcı tarafından ilk beslemesi yapılıp ağa kayıt edilir.
 * Beslenmekte olan bildirimler uygulamayı açan her ilk kullanıcıya ulaşmaktadır.
 * Bildirimi alan kullanıcılar şayet bildirimin ağdaki beslemesi kesilmişse bildirimi besleyebilmektedirler.
-* Bildirimler anonim,imzalı geçersiz,imzalı geçerli olmak üzere 3 tipten oluşur.
-* Bildirim tipleri Arayüz ayarlarından alımı ve beslemesi filtrelenebilinir.
+* Bildirimler anonim, imzalı geçersiz ve imzalı geçerli olmak üzere 3 tipten oluşur.
+* Bildirim tipleri arayüz ayarlarından alımı ve beslemesi filtrelenebilinir.
 
 ## Gerekli Kütüphaneler
 
