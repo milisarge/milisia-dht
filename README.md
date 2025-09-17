@@ -1,6 +1,6 @@
 # Milisia Ağı DHT Tabanlı Haberleşme 
 
-* Kademlia DHT kütüphanesi(<a href=https://github.com/savoirfairelinux/opendht>opendht</a>) kullanılarak durdurulamayan,uygulamayı kullananlar tarafından sürekli beslenebilen mesajlaşma altyapısı oluşturulmuştur.
+* Kademlia DHT kütüphanesi (<a href=https://github.com/savoirfairelinux/opendht>opendht</a>) kullanılarak durdurulamayan,uygulamayı kullananlar tarafından sürekli beslenebilen mesajlaşma altyapısı oluşturulmuştur.
 * Bunun ilk etapta Milis Linux için toplu iletimde bulunabilen bildirim sistemi olarak kullanılması öngörülmüştür.
 * Bildirimler anonim gönderilebildiği gibi imzalı olarak ta gönderilebilinir.
 * Bildirim oluşturulan kullanıcı tarafından ilk beslemesi yapılıp ağa kayıt edilir.
